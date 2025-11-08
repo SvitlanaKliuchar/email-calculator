@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Revenue Calculator | CRO28</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .calculator-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            height: 50px;
+            width: auto;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #1a1a1a;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .unit {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .helper-text {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 30px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-item {
+            margin-bottom: 20px;
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .result-value.highlight {
+            font-size: 48px;
+            color: #ffd93d;
+        }
+
+        .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 20px 0;
+        }
+
+        .roi-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .roi-text {
+            color: white;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .roi-highlight {
+            color: #ffd93d;
+            font-weight: 700;
+        }
+
+        @media (max-width: 600px) {
+            .calculator-container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .result-value {
+                font-size: 28px;
+            }
+
+            .result-value.highlight {
+                font-size: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="logo">
+            <img src="https://147118294.fs1.hubspotusercontent-eu1.net/hubfs/147118294/Untitled%20design-2.png" alt="CRO28 Logo">
+        </div>
+
+        <h1>Email Revenue Calculator</h1>
+        <p class="subtitle">See how much your email could be generating</p>
+
+        <form id="calculatorForm">
+            <div class="input-group">
+                <label for="revenue">Monthly Revenue (Total Business)</label>
+                <div class="input-wrapper">
+                    <input type="number" id="revenue" name="revenue" value="50000" required>
+                    <span class="unit">$</span>
+                </div>
+                <div class="helper-text">What's your total monthly revenue across all channels?</div>
+            </div>
+
+            <div class="input-group">
+                <label for="emailList">Email List Size</label>
+                <div class="input-wrapper">
+                    <input type="number" id="emailList" name="emailList" value="3000" required>
+                </div>
+                <div class="helper-text">How many people are on your email list?</div>
+            </div>
+
+            <div class="input-group">
+                <label for="aov">Average Order Value</label>
+                <div class="input-wrapper">
+                    <input type="number" id="aov" name="aov" value="65" step="0.01" required>
+                    <span class="unit">$</span>
+                </div>
+                <div class="helper-text">Average dollar amount per order</div>
+            </div>
+
+            <button type="submit" class="calculate-btn">Calculate Email Potential</button>
+        </form>
+
+        <div class="results" id="results">
+            <div class="result-item">
+                <div class="result-label">Current Email Revenue (Estimated)</div>
+                <div class="result-value" id="currentEmail">$0</div>
+                <div class="helper-text" style="color: rgba(255,255,255,0.8); margin-top: 8px;">
+                    Most brands without email strategy: 5-8% of revenue
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="result-item">
+                <div class="result-label">Potential Email Revenue (With CRO28)</div>
+                <div class="result-value highlight" id="potentialEmail">$0</div>
+                <div class="helper-text" style="color: rgba(255,255,255,0.8); margin-top: 8px;">
+                    With full email program: 18-25% of revenue
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="result-item">
+                <div class="result-label">Monthly Revenue Opportunity</div>
+                <div class="result-value highlight" id="opportunity">$0</div>
+            </div>
+
+            <div class="result-item">
+                <div class="result-label">Annual Revenue Opportunity</div>
+                <div class="result-value highlight" id="annualOpportunity">$0</div>
+            </div>
+
+            <div class="roi-section">
+                <div style="margin-bottom: 15px;">
+                    <div class="result-label" style="margin-bottom: 8px;">Revenue Breakdown:</div>
+                    <div class="roi-text" style="margin-bottom: 8px;">
+                        💳 <span class="roi-highlight">Cart Recovery:</span> <span id="cartPart">$0</span>/month
+                    </div>
+                    <div class="roi-text" style="margin-bottom: 8px;">
+                        👋 <span class="roi-highlight">Welcome Series:</span> <span id="welcomePart">$0</span>/month
+                    </div>
+                    <div class="roi-text" style="margin-bottom: 8px;">
+                        📧 <span class="roi-highlight">Weekly Campaigns:</span> <span id="campaignPart">$0</span>/month
+                    </div>
+                    <div class="roi-text">
+                        🔄 <span class="roi-highlight">Win-Back + Birthday:</span> <span id="winbackPart">$0</span>/month
+                    </div>
+                </div>
+                <div class="divider" style="margin: 20px 0;"></div>
+                <div class="roi-text">
+                    Investment: <span class="roi-highlight">$1,000/month</span><br>
+                    Return: <span class="roi-highlight" id="returnAmount">$0/month</span><br>
+                    ROI: <span class="roi-highlight" id="roiPercent">0%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('calculatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get input values
+            const monthlyRevenue = parseFloat(document.getElementById('revenue').value);
+            const emailList = parseFloat(document.getElementById('emailList').value);
+            const aov = parseFloat(document.getElementById('aov').value);
+
+            // Current state (without proper email)
+            const currentEmailPercent = 0.06; // 6% of revenue (typical without strategy)
+            const currentEmailRevenue = monthlyRevenue * currentEmailPercent;
+
+            // Potential with full email program
+            const potentialEmailPercent = 0.20; // 20% of revenue (conservative with full program)
+            const potentialEmailRevenue = monthlyRevenue * potentialEmailPercent;
+
+            // Opportunity
+            const monthlyOpportunity = potentialEmailRevenue - currentEmailRevenue;
+            const annualOpportunity = monthlyOpportunity * 12;
+
+            // Breakdown by channel (estimated distribution)
+            const cartRecovery = monthlyOpportunity * 0.25; // 25% from cart abandon
+            const welcomeSeries = monthlyOpportunity * 0.30; // 30% from welcome
+            const weeklyCampaigns = monthlyOpportunity * 0.35; // 35% from campaigns
+            const winbackBirthday = monthlyOpportunity * 0.10; // 10% from win-back/birthday
+
+            // ROI calculation
+            const investment = 1000;
+            const roi = ((monthlyOpportunity - investment) / investment * 100).toFixed(0);
+
+            // Display results
+            document.getElementById('currentEmail').textContent = '$' + Math.round(currentEmailRevenue).toLocaleString();
+            document.getElementById('potentialEmail').textContent = '$' + Math.round(potentialEmailRevenue).toLocaleString();
+            document.getElementById('opportunity').textContent = '$' + Math.round(monthlyOpportunity).toLocaleString();
+            document.getElementById('annualOpportunity').textContent = '$' + Math.round(annualOpportunity).toLocaleString();
+            
+            // Breakdown
+            document.getElementById('cartPart').textContent = '$' + Math.round(cartRecovery).toLocaleString();
+            document.getElementById('welcomePart').textContent = '$' + Math.round(welcomeSeries).toLocaleString();
+            document.getElementById('campaignPart').textContent = '$' + Math.round(weeklyCampaigns).toLocaleString();
+            document.getElementById('winbackPart').textContent = '$' + Math.round(winbackBirthday).toLocaleString();
+            
+            // ROI
+            document.getElementById('returnAmount').textContent = '$' + Math.round(monthlyOpportunity).toLocaleString();
+            document.getElementById('roiPercent').textContent = roi + '%';
+
+            // Show results with animation
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.classList.remove('show');
+            setTimeout(() => {
+                resultsDiv.classList.add('show');
+                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        });
+
+        // Auto-calculate on page load
+        window.addEventListener('load', function() {
+            document.getElementById('calculatorForm').dispatchEvent(new Event('submit'));
+        });
+    </script>
+</body>
+</html>
