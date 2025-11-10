@@ -135,6 +135,33 @@
         .roi-text { color: white; font-size: 16px; line-height: 1.6; }
         .roi-highlight { color: #ffd93d; font-weight: 700; }
 
+        .assumptions-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .assumptions-title {
+            color: #ffd93d;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .assumptions-text {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .assumptions-text strong {
+            color: white;
+        }
+
         @media (max-width: 600px) {
             .calculator-container { padding: 30px 20px; }
             h1 { font-size: 24px; }
@@ -167,7 +194,7 @@
                 <div class="input-wrapper">
                     <input type="number" id="emailList" name="emailList" value="3000" required>
                 </div>
-                <div class="helper-text">How many people are on your email list?</div>
+                <div class="helper-text">How many subscribers are on your email list?</div>
             </div>
 
             <div class="input-group">
@@ -187,7 +214,7 @@
                 <div class="result-label">Current Email Revenue (Estimated)</div>
                 <div class="result-value" id="currentEmail">$0</div>
                 <div class="helper-text" style="color: rgba(255,255,255,0.8); margin-top: 8px;">
-                    Most brands without email strategy: 5-8% of revenue
+                    Most brands without email strategy: 5-8% of total revenue
                 </div>
             </div>
 
@@ -197,7 +224,7 @@
                 <div class="result-label">Potential Email Revenue (With CRO28)</div>
                 <div class="result-value highlight" id="potentialEmail">$0</div>
                 <div class="helper-text" style="color: rgba(255,255,255,0.8); margin-top: 8px;">
-                    With full email program: 18-25% of revenue
+                    <span id="potentialDescription">With full email program: 18-25% of total revenue</span>
                 </div>
             </div>
 
@@ -255,6 +282,16 @@
                     ROI: <span class="roi-highlight" id="roiPercent">0%</span>
                 </div>
             </div>
+
+            <div class="assumptions-section">
+                <div class="assumptions-title">Calculation Assumptions</div>
+                <div class="assumptions-text" id="assumptionsText">
+                    <strong>Current State:</strong> Email represents 6% of total revenue (typical for brands without optimized email strategy)<br>
+                    <strong>With CRO28:</strong> Email represents 20% of total revenue (based on client results: Wolfhead Distillery improved open rates from 49.8% to 69.3%, click rates from 0.52% to 1.18%)<br>
+                    <strong>Flow Breakdown:</strong> Cart recovery (25%), Welcome series (30%), Weekly campaigns (35%), Win-back/Birthday (10%)<br>
+                    <strong>Note:</strong> Actual results vary by industry, list engagement, and implementation. This calculator uses conservative benchmarks from alcohol brand clients.
+                </div>
+            </div>
         </div>
     </div>
 
@@ -263,17 +300,54 @@
             const monthlyRevenue = parseFloat(document.getElementById('revenue').value);
             const emailList = parseFloat(document.getElementById('emailList').value);
             const aov = parseFloat(document.getElementById('aov').value);
-            if (isNaN(monthlyRevenue) || isNaN(emailList) || isNaN(aov)) return;
+            
+            if (isNaN(monthlyRevenue) || isNaN(emailList) || isNaN(aov) || 
+                monthlyRevenue <= 0 || emailList <= 0 || aov <= 0) {
+                alert('Please enter valid values for all fields.');
+                return;
+            }
 
+            // Calculate list-to-revenue ratio to determine realistic potential
+            const revenuePerSubscriber = monthlyRevenue / emailList;
+            
+            // Current state: 6% of revenue from email (baseline)
             const currentEmailPercent = 0.06;
             const currentEmailRevenue = monthlyRevenue * currentEmailPercent;
 
-            const potentialEmailPercent = 0.20;
-            const potentialEmailRevenue = monthlyRevenue * potentialEmailPercent;
+            // Potential state: Adjusted based on list size relative to revenue
+            // Logic: Smaller lists relative to revenue = lower potential ceiling
+            // Larger lists relative to revenue = higher potential ceiling
+            
+            let potentialEmailPercent;
+            let potentialDescription;
+            
+            if (revenuePerSubscriber > 50) {
+                // Small list relative to revenue (e.g., 1000 list, $100k revenue)
+                // Cap at 12-15% - list is too small to drive 20%+
+                potentialEmailPercent = 0.13;
+                potentialDescription = "With full email program: 12-15% of total revenue (list size limits potential)";
+            } else if (revenuePerSubscriber > 25) {
+                // Medium list relative to revenue (e.g., 3000 list, $50k revenue)
+                // Can reach 16-18%
+                potentialEmailPercent = 0.17;
+                potentialDescription = "With full email program: 16-18% of total revenue";
+            } else if (revenuePerSubscriber > 15) {
+                // Good list relative to revenue (e.g., 5000 list, $50k revenue)
+                // Can reach 18-22%
+                potentialEmailPercent = 0.20;
+                potentialDescription = "With full email program: 18-22% of total revenue";
+            } else {
+                // Large list relative to revenue (e.g., 10000 list, $50k revenue)
+                // Can reach 22-25%
+                potentialEmailPercent = 0.23;
+                potentialDescription = "With full email program: 22-25% of total revenue";
+            }
 
+            const potentialEmailRevenue = monthlyRevenue * potentialEmailPercent;
             const monthlyOpportunity = potentialEmailRevenue - currentEmailRevenue;
             const annualOpportunity = monthlyOpportunity * 12;
 
+            // Flow breakdown (percentage of opportunity)
             const cartRecovery = monthlyOpportunity * 0.25;
             const welcomeSeries = monthlyOpportunity * 0.30;
             const weeklyCampaigns = monthlyOpportunity * 0.35;
@@ -282,6 +356,7 @@
             const investment = 1000;
             const roi = ((monthlyOpportunity - investment) / investment * 100).toFixed(0);
 
+            // Update UI
             document.getElementById('currentEmail').textContent = '$' + Math.round(currentEmailRevenue).toLocaleString();
             document.getElementById('potentialEmail').textContent = '$' + Math.round(potentialEmailRevenue).toLocaleString();
             document.getElementById('opportunity').textContent = '$' + Math.round(monthlyOpportunity).toLocaleString();
@@ -294,6 +369,17 @@
 
             document.getElementById('returnAmount').textContent = '$' + Math.round(monthlyOpportunity).toLocaleString();
             document.getElementById('roiPercent').textContent = roi + '%';
+            
+            document.getElementById('potentialDescription').textContent = potentialDescription;
+
+            // Update assumptions text
+            const percentDisplay = (potentialEmailPercent * 100).toFixed(0);
+            document.getElementById('assumptionsText').innerHTML = `
+                <strong>Current State:</strong> Email represents 6% of total revenue (typical for brands without optimized email strategy)<br>
+                <strong>With CRO28:</strong> Email represents ${percentDisplay}% of total revenue (adjusted for your list size of ${emailList.toLocaleString()} subscribers relative to $${monthlyRevenue.toLocaleString()} monthly revenue)<br>
+                <strong>Flow Breakdown:</strong> Cart recovery (25%), Welcome series (30%), Weekly campaigns (35%), Win-back/Birthday (10%)<br>
+                <strong>Note:</strong> Potential is adjusted based on list size. Larger lists relative to revenue can achieve higher email revenue percentages. Based on Wolfhead Distillery results: open rates 49.8% → 69.3%, click rates 0.52% → 1.18%.
+            `;
 
             const resultsDiv = document.getElementById('results');
             resultsDiv.classList.remove('show');
@@ -304,6 +390,14 @@
         }
 
         document.getElementById('calcBtn').addEventListener('click', runCalc);
+        
+        // Allow Enter key to trigger calculation
+        document.getElementById('calculatorForm').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                runCalc();
+            }
+        });
     </script>
 </body>
 </html>
