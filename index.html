@@ -152,7 +152,6 @@
         <h1>Email Revenue Calculator</h1>
         <p class="subtitle">See how much your email could be generating</p>
 
-        <!-- Only change: prevent submission. Use button + runCalc. -->
         <form id="calculatorForm" onsubmit="return false;">
             <div class="input-group">
                 <label for="revenue">Monthly Revenue (Total Business)</label>
@@ -217,17 +216,36 @@
             <div class="roi-section">
                 <div style="margin-bottom: 15px;">
                     <div class="result-label" style="margin-bottom: 8px;">Revenue Breakdown:</div>
-                    <div class="roi-text" style="margin-bottom: 8px;">
-                        💳 <span class="roi-highlight">Cart Recovery:</span> <span id="cartPart">$0</span>/month
+                    <div class="roi-text" style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                        </svg>
+                        <span class="roi-highlight">Cart Recovery:</span> <span id="cartPart">$0</span>/month
                     </div>
-                    <div class="roi-text" style="margin-bottom: 8px;">
-                        👋 <span class="roi-highlight">Welcome Series:</span> <span id="welcomePart">$0</span>/month
+                    <div class="roi-text" style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <span class="roi-highlight">Welcome Series:</span> <span id="welcomePart">$0</span>/month
                     </div>
-                    <div class="roi-text" style="margin-bottom: 8px;">
-                        📧 <span class="roi-highlight">Weekly Campaigns:</span> <span id="campaignPart">$0</span>/month
+                    <div class="roi-text" style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                        <span class="roi-highlight">Weekly Campaigns:</span> <span id="campaignPart">$0</span>/month
                     </div>
-                    <div class="roi-text">
-                        🔄 <span class="roi-highlight">Win-Back + Birthday:</span> <span id="winbackPart">$0</span>/month
+                    <div class="roi-text" style="display: flex; align-items: center; gap: 8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 12 20 22 4 22 4 12"/>
+                            <rect x="2" y="7" width="20" height="5"/>
+                            <line x1="12" y1="22" x2="12" y2="7"/>
+                            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+                            <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                        </svg>
+                        <span class="roi-highlight">Win-Back + Birthday:</span> <span id="winbackPart">$0</span>/month
                     </div>
                 </div>
                 <div class="divider" style="margin: 20px 0;"></div>
@@ -242,17 +260,15 @@
 
     <script>
         function runCalc() {
-            // Inputs
             const monthlyRevenue = parseFloat(document.getElementById('revenue').value);
             const emailList = parseFloat(document.getElementById('emailList').value);
             const aov = parseFloat(document.getElementById('aov').value);
             if (isNaN(monthlyRevenue) || isNaN(emailList) || isNaN(aov)) return;
 
-            // Same math as your original
-            const currentEmailPercent = 0.06;  // 6%
+            const currentEmailPercent = 0.06;
             const currentEmailRevenue = monthlyRevenue * currentEmailPercent;
 
-            const potentialEmailPercent = 0.20; // 20%
+            const potentialEmailPercent = 0.20;
             const potentialEmailRevenue = monthlyRevenue * potentialEmailPercent;
 
             const monthlyOpportunity = potentialEmailRevenue - currentEmailRevenue;
@@ -266,7 +282,6 @@
             const investment = 1000;
             const roi = ((monthlyOpportunity - investment) / investment * 100).toFixed(0);
 
-            // Outputs
             document.getElementById('currentEmail').textContent = '$' + Math.round(currentEmailRevenue).toLocaleString();
             document.getElementById('potentialEmail').textContent = '$' + Math.round(potentialEmailRevenue).toLocaleString();
             document.getElementById('opportunity').textContent = '$' + Math.round(monthlyOpportunity).toLocaleString();
@@ -280,7 +295,6 @@
             document.getElementById('returnAmount').textContent = '$' + Math.round(monthlyOpportunity).toLocaleString();
             document.getElementById('roiPercent').textContent = roi + '%';
 
-            // Same animation reset + smooth scroll
             const resultsDiv = document.getElementById('results');
             resultsDiv.classList.remove('show');
             setTimeout(() => {
@@ -289,7 +303,6 @@
             }, 100);
         }
 
-        // Click to calculate
         document.getElementById('calcBtn').addEventListener('click', runCalc);
     </script>
 </body>
