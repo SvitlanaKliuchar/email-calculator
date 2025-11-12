@@ -296,6 +296,25 @@
     </div>
 
     <script>
+        // Google Apps Script Web App URL for data capture
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNRiDiNf5hpXsfw_yHBr0nFIK4_duDsyQGUmaRnGGYSbOh-jXGKllRnqMvaxA5b8vF/exec';
+
+        async function sendToGoogleSheets(data) {
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                console.log('Data sent to Google Sheets');
+            } catch (error) {
+                console.error('Error sending to Google Sheets:', error);
+            }
+        }
+
         function runCalc() {
             const monthlyRevenue = parseFloat(document.getElementById('revenue').value);
             const emailList = parseFloat(document.getElementById('emailList').value);
@@ -354,6 +373,15 @@
 
             const investment = 1000;
             const roi = ((monthlyOpportunity - investment) / investment * 100).toFixed(0);
+
+            // Send anonymous data to Google Sheets
+            sendToGoogleSheets({
+                revenue: monthlyRevenue,
+                emailList: emailList,
+                aov: aov,
+                opportunity: Math.round(monthlyOpportunity),
+                potentialPercent: (potentialEmailPercent * 100).toFixed(0)
+            });
 
             // Update UI
             document.getElementById('currentEmail').textContent = '$' + Math.round(currentEmailRevenue).toLocaleString();
