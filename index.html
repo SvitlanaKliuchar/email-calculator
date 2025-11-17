@@ -224,7 +224,7 @@
                 <div class="result-label">Potential Email Revenue (With CRO28)</div>
                 <div class="result-value highlight" id="potentialEmail">$0</div>
                 <div class="helper-text" style="color: rgba(255,255,255,0.8); margin-top: 8px;">
-                    <span id="potentialDescription">With full email program: 12-18% of total revenue</span>
+                    <span id="potentialDescription">With full email program: 10-14% of total revenue</span>
                 </div>
             </div>
 
@@ -287,9 +287,9 @@
                 <div class="assumptions-title">Calculation Assumptions</div>
                 <div class="assumptions-text" id="assumptionsText">
                     <strong>Current State:</strong> Email represents 6% of total revenue (typical for brands without optimized email strategy)<br>
-                    <strong>With CRO28:</strong> Email represents 15% of total revenue (conservative estimate based on client results: Wolfhead Distillery improved open rates from 49.8% to 69.3%, click rates from 0.52% to 1.18%)<br>
-                    <strong>Flow Breakdown:</strong> Cart recovery (25%), Welcome series (30%), Weekly campaigns (35%), Win-back/Birthday (10%)<br>
-                    <strong>Note:</strong> Actual results vary by industry, list engagement, and implementation. This calculator uses conservative benchmarks.
+                    <strong>With CRO28:</strong> Email represents 12% of total revenue (conservative estimate based on client results)<br>
+                    <strong>Timeline:</strong> Estimated monthly revenue once fully implemented (typically 90 days)<br>
+                    <strong>Note:</strong> Does not account for list growth from capture optimization strategies we implement. Based on Wolfhead Distillery results. Actual results typically higher as list grows.
                 </div>
             </div>
         </div>
@@ -333,43 +333,38 @@
             const currentEmailPercent = 0.06;
             const currentEmailRevenue = monthlyRevenue * currentEmailPercent;
 
-            // Potential state: More conservative ranges adjusted based on list size relative to revenue
-            // Reduced all percentages by ~3-5 percentage points to be more conservative
+            // Conservative potential state - reduced by 3-5 percentage points across all tiers
             
             let potentialEmailPercent;
             let potentialDescription;
             
             if (revenuePerSubscriber > 50) {
                 // Small list relative to revenue
-                // Reduced from 13% to 10%
-                potentialEmailPercent = 0.10;
-                potentialDescription = "With full email program: 10-12% of total revenue (list size limits potential)";
+                potentialEmailPercent = 0.09;
+                potentialDescription = "With full email program: 9-11% of total revenue (conservative for list size)";
             } else if (revenuePerSubscriber > 25) {
                 // Medium list relative to revenue
-                // Reduced from 17% to 13%
-                potentialEmailPercent = 0.13;
-                potentialDescription = "With full email program: 12-14% of total revenue";
+                potentialEmailPercent = 0.11;
+                potentialDescription = "With full email program: 10-12% of total revenue (conservative estimate)";
             } else if (revenuePerSubscriber > 15) {
                 // Good list relative to revenue
-                // Reduced from 20% to 15%
-                potentialEmailPercent = 0.15;
-                potentialDescription = "With full email program: 14-16% of total revenue";
+                potentialEmailPercent = 0.12;
+                potentialDescription = "With full email program: 11-13% of total revenue (conservative estimate)";
             } else {
                 // Large list relative to revenue
-                // Reduced from 23% to 18%
-                potentialEmailPercent = 0.18;
-                potentialDescription = "With full email program: 17-19% of total revenue";
+                potentialEmailPercent = 0.14;
+                potentialDescription = "With full email program: 13-15% of total revenue (conservative estimate)";
             }
 
             const potentialEmailRevenue = monthlyRevenue * potentialEmailPercent;
             const monthlyOpportunity = potentialEmailRevenue - currentEmailRevenue;
             const annualOpportunity = monthlyOpportunity * 12;
 
-            // Flow breakdown (percentage of opportunity)
-            const cartRecovery = monthlyOpportunity * 0.25;
-            const welcomeSeries = monthlyOpportunity * 0.30;
-            const weeklyCampaigns = monthlyOpportunity * 0.35;
-            const winbackBirthday = monthlyOpportunity * 0.10;
+            // Conservative flow breakdown - win-back/birthday reduced from 10% to 3%
+            const cartRecovery = monthlyOpportunity * 0.30;
+            const welcomeSeries = monthlyOpportunity * 0.35;
+            const weeklyCampaigns = monthlyOpportunity * 0.32;
+            const winbackBirthday = monthlyOpportunity * 0.03;
 
             const investment = 1000;
             const roi = ((monthlyOpportunity - investment) / investment * 100).toFixed(0);
@@ -403,9 +398,9 @@
             const percentDisplay = (potentialEmailPercent * 100).toFixed(0);
             document.getElementById('assumptionsText').innerHTML = `
                 <strong>Current State:</strong> Email represents 6% of total revenue (typical for brands without optimized email strategy)<br>
-                <strong>With CRO28:</strong> Email represents ${percentDisplay}% of total revenue (conservative estimate adjusted for your list size of ${emailList.toLocaleString()} subscribers relative to $${monthlyRevenue.toLocaleString()} monthly revenue)<br>
-                <strong>Flow Breakdown:</strong> Cart recovery (25%), Welcome series (30%), Weekly campaigns (35%), Win-back/Birthday (10%)<br>
-                <strong>Note:</strong> Potential is conservatively adjusted based on list size. Based on Wolfhead Distillery results: open rates 49.8% → 69.3%, click rates 0.52% → 1.18%. Actual results vary by industry and engagement levels.
+                <strong>With CRO28:</strong> Email represents ${percentDisplay}% of total revenue (conservative estimate based on your list of ${emailList.toLocaleString()} subscribers)<br>
+                <strong>Timeline:</strong> Estimated monthly revenue once fully implemented (typically 90 days)<br>
+                <strong>Note:</strong> Does not account for list growth from capture optimization strategies we implement. Based on Wolfhead Distillery results: open rates 49.8% → 69.3%, click rates 0.52% → 1.18%. Actual results typically higher as list grows.
             `;
 
             const resultsDiv = document.getElementById('results');
